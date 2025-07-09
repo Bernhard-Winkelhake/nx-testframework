@@ -1,3 +1,4 @@
+```
 Is Buy-Part ?  
    ├── Yes
    │   ├── BuyPart-Link attribute must be set
@@ -9,3 +10,4 @@ Is Buy-Part ?
    └── No
        ├── MakePart Postprocessing attribute must be set
        ├── MakePart quality control attribute must be set
+```
