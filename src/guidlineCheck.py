@@ -46,16 +46,7 @@ def main():
     except Exception:
         attribute_value = None
 
-    # Attribut "Ansprechpartner" prüfen
-    attribute_value = None
-    try:
-        attributes = workPart.GetUserAttributes()
-        for attr in attributes:
-            if attr.Title.strip().lower() == "ansprechpartner":
-                attribute_value = attr.StringValue.strip()
-                break
-    except Exception:
-        attribute_value = None
+
 
     # Ergebnisnachricht zusammenstellen
     message = ""
