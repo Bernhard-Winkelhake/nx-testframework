@@ -3,7 +3,6 @@ import NXOpen.Layer
 from typing import List
 
 theSession = NXOpen.Session.GetSession()
-ui = NXOpen.UI.GetUI()
 workPart = theSession.Parts.Work
 displayPart = theSession.Parts.Display
 
