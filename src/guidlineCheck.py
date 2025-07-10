@@ -1,9 +1,20 @@
 import NXOpen
+import NXOpen.Layer
+
+theSession = NXOpen.Session.GetSession()
+ui = NXOpen.UI.GetUI()
+workPart = theSession.Parts.Work
+
+def move_object_to_layer(object: NXOpen.DisplayableObject, layer:int):
+    objectArray1 = [NXOpen.DisplayableObject.Null] * 1
+    objectArray1[0] = object
+    workPart.Layers.MoveDisplayableObjects(layer, objectArray1)
+
+
+
 
 def main():
-    theSession = NXOpen.Session.GetSession()
-    workPart = theSession.Parts.Work
-    ui = NXOpen.UI.GetUI()
+    
 
     # Erwartete Layer
     SKETCH_LAYER_EXPECTED = 21
@@ -13,6 +24,7 @@ def main():
     under_constrained_sketches = []
     wrong_layer_sketches = []
     wrong_layer_planes = []
+
 
     # Skizzen prüfen
     for sketch in workPart.Sketches:
@@ -27,12 +39,23 @@ def main():
         if sketch.Layer != SKETCH_LAYER_EXPECTED:
             wrong_layer_sketches.append(f"{name} (Layer: {sketch.Layer})")
 
-    # Ebenen prüfen und ggf. Layer korrigieren
-    for plane in workPart.Planes:
-        name = plane.Name
-        if plane.Layer != PLANE_LAYER_EXPECTED:
-            wrong_layer_planes.append(f"{name} (Layer: {plane.Layer})")
-            plane.Layer = PLANE_LAYER_EXPECTED  # Plane auf richtigen Layer verschieben
+    # Ebenen prüfen und ggf. Layer korrigieren (nur DatumPlanes)
+    for feature in workPart.Features:
+        if isinstance(feature, NXOpen.Features.DatumPlane):
+            datum_plane = feature
+            name = datum_plane.Name
+
+            # Die eigentliche geometrische Plane extrahieren
+            plane = datum_plane.GetEntities()[0]
+
+            current_layer = workPart.LayerManager.GetLayerOfObject(plane)
+            if current_layer != PLANE_LAYER_EXPECTED:
+                wrong_layer_planes.append(f"{name} (Layer: {current_layer})")
+                workPart.LayerManager.SetObjectLayer(plane, PLANE_LAYER_EXPECTED)
+
+
+            
+
 
 
     # Attribut "Ansprechpartner" prüfen
