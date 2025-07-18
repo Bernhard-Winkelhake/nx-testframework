@@ -13,6 +13,9 @@ def move_object_to_layer(object: NXOpen.DisplayableObject, layer:int):
 
 
 
+
+
+
 def main():
     
 
