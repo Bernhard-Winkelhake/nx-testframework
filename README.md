@@ -11,8 +11,9 @@ A lightweight test framework for validating layer assignments and attributes in 
 | ✅ Plane layer check implemented                                         | Done       |
 | ✅ Sketch layer check implemented                                        | Done       |
 | ✅ Solid body (hole) layer check implemented                             | Done       |
-| ☐ Add new `BoolAttribute` `isBuyPart` to starter part                   | To Do      |
-| ☐ Implement check for BuyPart option                                    | To Do      |
+| ✅ Add new `BoolAttribute` `isBuyPart` to starter part                   | Done      |
+| ✅ Implement check for BuyPart option                                    | To Do      |
+| ☐ Merge new starter part into main starter part                          | To Do      |
 
 ---
 

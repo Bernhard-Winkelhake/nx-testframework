@@ -1,8 +1,8 @@
-# buyPartCheck.py
 import NXOpen
+from utils.notify import popup
 
-STANDARDTEXT_PRICE = {"0", "n/a", "-"}
-STANDARDTEXT_ORDERLINK = {"n/a", "kein link", "-"}
+STANDARDTEXT_PRICE = {"0", "n/a", "-", "hier einzelteilpreis eintragen"}
+STANDARDTEXT_ORDERLINK = {"n/a", "kein link", "-", "hier link hinterlegen"}
 
 
 def check_is_buy_part():
@@ -18,6 +18,7 @@ def check_is_buy_part():
     is_buy_part = get_attr("01_Part_isBuyPart")
 
     if is_buy_part == "ja":
+        # Wenn Kaufteil: Preis & Link prüfen
         price = get_attr("02_Part_price")
         order_link = get_attr("03_Part_orderLink")
 
@@ -30,10 +31,19 @@ def check_is_buy_part():
             errors.append("❌ '03_Part_orderLink' ist ungültig oder nicht gesetzt.")
 
         if errors:
-            print("⚠️ Kaufteil-Check fehlgeschlagen:")
-            for err in errors:
-                print(err)
+            msg = "Kaufteil-Check fehlgeschlagen:\n\n" + "\n".join(errors)
+            popup("Kaufteil-Check", msg, "error")
         else:
-            print("✔️ Kaufteil-Check bestanden: Preis und Bestelllink sind gültig.")
+            popup("Kaufteil-Check", "✔️ Preis und Bestelllink sind gültig.", "info")
+
+    elif is_buy_part == "ja/nein eintragen, sonst undefiniert":
+        popup("Kaufteil-Check", "⚠️ Attribut '01_Part_isBuyPart' ist auf Standardwert gesetzt – bitte 'ja' oder 'nein' eintragen.", "warning")
+
+    elif is_buy_part == "nein":
+        popup("Kaufteil-Check", "ℹ️ Kein Kaufteil: Check übersprungen.", "note")
+
+    elif not is_buy_part:
+        popup("Kaufteil-Check", "⚠️ Attribut '01_Part_isBuyPart' ist nicht gesetzt.", "warning")
+
     else:
-        print("ℹ️ Kein Kaufteil: Check übersprungen.")
+        popup("Kaufteil-Check", f"⚠️ Ungültiger Wert für '01_Part_isBuyPart': '{is_buy_part}'", "warning")

@@ -3,10 +3,17 @@ import NXOpen
 import NXOpen.Layer
 from typing import List
 
+from utils.config_loader import load_config
+
+# NX Session and Work Part
 theSession = NXOpen.Session.GetSession()
 workPart = theSession.Parts.Work
 
-SKETCH_LAYER_EXPECTED = 21
+# Load Layer from config
+config = load_config()
+SKETCH_LAYER_EXPECTED =  config.get("layers", {}).get("sketch", 21)
+
+
 
 def move_object_to_layer(obj: NXOpen.DisplayableObject, layer: int):
     workPart.Layers.MoveDisplayableObjects(layer, [obj])
