@@ -15,6 +15,9 @@ A lightweight test framework for validating layer assignments and attributes in 
 | ✅ Implement check for BuyPart option                                    | Done      |
 | ☐ Merge new starter part into main starter part                          | To Do      |
 | ☐ Implement tests for automatic tests after code changes                 | To Do      |
+| ☐ Make code for integrated Button in Simens NX                 | To Do      |
+| ☐ Make documentation in internal Wiki for better understanding              | To Do      |
+
 
 ---
 
