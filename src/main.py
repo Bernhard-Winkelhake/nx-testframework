@@ -10,9 +10,10 @@ def main():
     assign_datum_planes_to_layer()
     assign_sketches_to_layer()
     #assign_holes_to_layer()
+    check_responsiblePerson()
     check_is_buy_part()
     save_active_part()
-    check_responsiblePerson()
+    
 
 if __name__ == '__main__':
     main()
