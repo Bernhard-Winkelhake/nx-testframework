@@ -3,6 +3,7 @@ from checks.sketch_check import assign_sketches_to_layer
 from utils.save_part import save_active_part
 from checks.solidbody_check import assign_holes_to_layer
 from checks.buypart_check import check_is_buy_part
+from checks.responsiblePerson_check import check_responsiblePerson
 
 def main():
     #  Check and correct layers if necessary
@@ -11,6 +12,7 @@ def main():
     #assign_holes_to_layer()
     check_is_buy_part()
     save_active_part()
+    check_responsiblePerson()
 
 if __name__ == '__main__':
     main()

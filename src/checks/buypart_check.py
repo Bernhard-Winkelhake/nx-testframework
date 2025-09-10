@@ -14,6 +14,8 @@ def check_is_buy_part():
             return workPart.GetUserAttributeAsString(name, NXOpen.NXObject.AttributeType.String, -1).strip().lower()
         except:
             return ""
+        
+    
 
     is_buy_part = get_attr("01_Part_isBuyPart")
 
