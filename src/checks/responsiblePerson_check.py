@@ -22,5 +22,4 @@ def check_responsiblePerson():
         popup("Responsible Person Check", f"⚠️ Ungültiger Wert für '00_ResponsiblePerson': '{currentResponsiblePerson}'", "error")
     elif currentResponsiblePerson in STANDARDTEXT_NAME:
         popup("Responsible Person Check", f"⚠️ Ungültiger Wert für '00_ResponsiblePerson': '{currentResponsiblePerson}'", "error")
-    else:
-        popup("Responsible Person Check", f"⚠️ top Wert für '00_ResponsiblePerson': '{currentResponsiblePerson,STANDARDTEXT_NAME}'", "warning") 
+    
