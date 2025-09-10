@@ -1,8 +1,8 @@
 import NXOpen
 from utils.notify import popup
 
-STANDARDTEXT_PRICE = {"0", "n/a", "-", "hier einzelteilpreis eintragen"}
-STANDARDTEXT_ORDERLINK = {"n/a", "kein link", "-", "hier link hinterlegen"}
+STANDARDTEXT_PRICE = {"0", "n/a", "-", "hier einzelteilpreis eintragen","hier einzelpreis eintragen"}
+STANDARDTEXT_ORDERLINK = {"n/a", "kein link", "-", "hier link hinterlegen","hier link eintragen"}
 
 
 def check_is_buy_part():

@@ -1,7 +1,7 @@
 import NXOpen
 from utils.notify import popup
 
-STANDARDTEXT_NAME = {"nein"}
+STANDARDTEXT_NAME = {"hier deinen namen eintragen"}
 
 
 def check_responsiblePerson():
@@ -20,6 +20,8 @@ def check_responsiblePerson():
 
     if currentResponsiblePerson == "":
         popup("Responsible Person Check", f"⚠️ Ungültiger Wert für '00_ResponsiblePerson': '{currentResponsiblePerson}'", "error")
-    elif currentResponsiblePerson in STANDARDTEXT_NAME:
+    elif not currentResponsiblePerson or currentResponsiblePerson in STANDARDTEXT_NAME:
         popup("Responsible Person Check", f"⚠️ Ungültiger Wert für '00_ResponsiblePerson': '{currentResponsiblePerson}'", "error")
+    else :
+        popup("Responsible Person Check", f"⚠️ top Wert für '00_ResponsiblePerson': {currentResponsiblePerson , STANDARDTEXT_NAME}", "error")
     
