@@ -2,12 +2,13 @@ import pytest
 import sys
 import os
 
-# Pfad zur src hinzufügen, aber NICHT sys.path.clear()
-sys.path.append(os.path.abspath("../src"))
-
 from checks import plane_check
 from checks.plane_check import assign_datum_planes_to_layer
 from unittest.mock import MagicMock, patch
+
+# Pfad zur src hinzufügen, aber NICHT sys.path.clear()
+sys.path.append(os.path.abspath("../src"))
+
 
 @patch("checks.plane_check.workPart")
 def test_assign_datum_planes_to_layer(mock_workPart):
