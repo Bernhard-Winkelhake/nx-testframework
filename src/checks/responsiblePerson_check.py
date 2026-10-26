@@ -1,25 +1,32 @@
-import NXOpen
-from utils.notify import popup
+from check_result import CheckResult, Severity, Status
+from checks.base import BaseCheck
 
-STANDARDTEXT_NAME = {"hier deinen namen eintragen"}
+STANDARDTEXT_NAME = {"hier deinen namen eintragen","hier namen eintragen"}
 
 
-def check_responsiblePerson():
-    session = NXOpen.Session.GetSession()
-    workPart = session.Parts.Work
+def _get_string_attr(work_part, name):
+    try:
+        import NXOpen
+        return work_part.GetUserAttributeAsString(
+            name, NXOpen.NXObject.AttributeType.String, -1
+        ).strip()
+    except Exception:
+        return ""
 
-    def get_attr(name):
-        try:
-            return workPart.GetUserAttributeAsString(name, NXOpen.NXObject.AttributeType.String, -1).strip().lower()
-        except:
-            return ""
-        
-    
 
-    currentResponsiblePerson = get_attr("00_ResponsiblePerson")
+class ResponsiblePersonCheck(BaseCheck):
+    rule_id = "RESPONSIBLE_PERSON"
+    name = "Responsible person"
+    config_key = "enable_responsible_person_check"
 
-    if currentResponsiblePerson == "":
-        popup("Responsible Person Check", f"⚠️ Ungültiger Wert für '00_ResponsiblePerson': '{currentResponsiblePerson}'", "error")
-    elif not currentResponsiblePerson or currentResponsiblePerson in STANDARDTEXT_NAME:
-        popup("Responsible Person Check", f"⚠️ Ungültiger Wert für '00_ResponsiblePerson': '{currentResponsiblePerson}'", "error")
-    
+    def run(self, work_part, config):
+        attr_name = config.get("attributes", {}).get(
+            "responsible_person", "00_ResponsiblePerson"
+        )
+        value = _get_string_attr(work_part, attr_name)
+        invalid = not value or value.lower() in STANDARDTEXT_NAME
+        if invalid:
+            return [CheckResult(self.rule_id, self.name, Status.FAILED, Severity.ERROR,
+                                f"Attribute '{attr_name}' is missing or invalid.")]
+        return [CheckResult(self.rule_id, self.name, Status.PASSED, Severity.ERROR,
+                            f"Responsible person is set to '{value}'.")]

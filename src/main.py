@@ -1,20 +1,20 @@
-from checks.plane_check import assign_datum_planes_to_layer
-from checks.sketch_check import assign_sketches_to_layer
-from utils.save_part import save_active_part
-from checks.solidbody_check import assign_holes_to_layer
-from checks.buypart_check import check_is_buy_part
-from checks.responsiblePerson_check import check_responsiblePerson
+"""NX entry point for the model checker."""
+from check_runner import CheckRunner
+
 
 def main():
-    #  Check and correct layers if necessary
-    assign_datum_planes_to_layer()
-    assign_sketches_to_layer()
-    #assign_holes_to_layer()
-    check_responsiblePerson()
-    check_is_buy_part()
-    save_active_part()
-    
+    runner = CheckRunner.from_active_nx_part()
+    results = runner.run()
+    report = runner.build_report(results)
 
-if __name__ == '__main__':
+    # Keep the NX entry point deliberately small. UI, REST upload and automatic
+    # fixes can later consume the same report without changing the checks.
+    print("NX Model Check:", report["status"])
+    for result in results:
+        print(f"[{result.status.value}] {result.rule_id}: {result.message}")
+
+    return report
+
+
+if __name__ == "__main__":
     main()
-

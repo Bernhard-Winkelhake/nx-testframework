@@ -1,16 +1,21 @@
 {
   "layers": {
     "plane": 62,
+    "csys": 61,
     "sketch": 21,
     "solid_hole": 3,
     "wavedatum": 81
   },
   "attributes": {
-    "buy_part_flag": "isBuyPart"
+    "responsible_person": "00_ResponsiblePerson",
+    "buy_part_flag": "01_Part_isBuyPart",
+    "price": "02_Part_price",
+    "order_link": "03_Part_orderLink"
   },
   "checks": {
     "enable_plane_check": true,
     "enable_sketch_check": true,
+    "enable_responsible_person_check": true,
     "enable_solid_check": false,
     "enable_buy_part_check": true
   }

@@ -1,51 +1,44 @@
-import NXOpen
-from utils.notify import popup
+from check_result import CheckResult, Severity, Status
+from checks.base import BaseCheck
+from checks.responsiblePerson_check import _get_string_attr
 
-STANDARDTEXT_PRICE = {"0", "n/a", "-", "hier einzelteilpreis eintragen","hier einzelpreis eintragen"}
-STANDARDTEXT_ORDERLINK = {"n/a", "kein link", "-", "hier link hinterlegen","hier link eintragen"}
+STANDARDTEXT_PRICE = {"0", "n/a", "-", "hier einzelteilpreis eintragen", "hier einzelpreis eintragen"}
+STANDARDTEXT_ORDERLINK = {"n/a", "kein link", "-", "hier link hinterlegen", "hier link eintragen"}
+STANDARDTEXT_FLAG = {"ja/nein eintragen, sonst undefiniert" }
 
 
-def check_is_buy_part():
-    session = NXOpen.Session.GetSession()
-    workPart = session.Parts.Work
+class BuyPartCheck(BaseCheck):
+    rule_id = "BUY_PART"
+    name = "Buy part attributes"
+    config_key = "enable_buy_part_check"
 
-    def get_attr(name):
-        try:
-            return workPart.GetUserAttributeAsString(name, NXOpen.NXObject.AttributeType.String, -1).strip().lower()
-        except:
-            return ""
-        
-    
+    def run(self, work_part, config):
+        attrs = config.get("attributes", {})
+        flag_name = attrs.get("buy_part_flag", "01_Part_isBuyPart")
+        price_name = attrs.get("price", "02_Part_price")
+        link_name = attrs.get("order_link", "03_Part_orderLink")
+        flag = _get_string_attr(work_part, flag_name).lower()
 
-    is_buy_part = get_attr("01_Part_isBuyPart")
+        if flag == "nein":
+            return [CheckResult(self.rule_id, self.name, Status.SKIPPED, Severity.INFO,
+                                "Part is not a buy part; price/link checks skipped.")]
+        if not flag or flag == STANDARDTEXT_FLAG or flag not in {"ja", "nein"}:
+            return [CheckResult(self.rule_id, self.name, Status.FAILED, Severity.WARNING,
+                                f"Attribute '{flag_name}' must be 'ja' or 'nein'.")]
 
-    if is_buy_part == "ja":
-        # Wenn Kaufteil: Preis & Link prüfen
-        price = get_attr("02_Part_price")
-        order_link = get_attr("03_Part_orderLink")
-
-        errors = []
-
-        if not price or price in STANDARDTEXT_PRICE:
-            errors.append("❌ '02_Part_price' ist ungültig oder nicht gesetzt.")
-
-        if not order_link or order_link in STANDARDTEXT_ORDERLINK:
-            errors.append("❌ '03_Part_orderLink' ist ungültig oder nicht gesetzt.")
-
-        if errors:
-            msg = "Kaufteil-Check fehlgeschlagen:\n\n" + "\n".join(errors)
-            popup("Kaufteil-Check", msg, "error")
-        else:
-            popup("Kaufteil-Check", "✔️ Preis und Bestelllink sind gültig.", "info")
-
-    elif is_buy_part == "ja/nein eintragen, sonst undefiniert":
-        popup("Kaufteil-Check", "⚠️ Attribut '01_Part_isBuyPart' ist auf Standardwert gesetzt – bitte 'ja' oder 'nein' eintragen.", "warning")
-
-    elif is_buy_part == "nein":
-        popup("Kaufteil-Check", "ℹ️ Kein Kaufteil: Check übersprungen.", "note")
-
-    elif not is_buy_part:
-        popup("Kaufteil-Check", "⚠️ Attribut '01_Part_isBuyPart' ist nicht gesetzt.", "warning")
-
-    else:
-        popup("Kaufteil-Check", f"⚠️ Ungültiger Wert für '01_Part_isBuyPart': '{is_buy_part}'", "warning")
+        results = []
+        price = _get_string_attr(work_part, price_name).lower()
+        link = _get_string_attr(work_part, link_name).lower()
+        results.append(CheckResult(
+            "BUY_PART_PRICE", "Buy part price",
+            Status.FAILED if (not price or price in STANDARDTEXT_PRICE) else Status.PASSED,
+            Severity.ERROR,
+            f"Attribute '{price_name}' is " + ("missing or invalid." if (not price or price in STANDARDTEXT_PRICE) else "valid.")
+        ))
+        results.append(CheckResult(
+            "BUY_PART_ORDER_LINK", "Buy part order link",
+            Status.FAILED if (not link or link in STANDARDTEXT_ORDERLINK) else Status.PASSED,
+            Severity.ERROR,
+            f"Attribute '{link_name}' is " + ("missing or invalid." if (not link or link in STANDARDTEXT_ORDERLINK) else "valid.")
+        ))
+        return results
